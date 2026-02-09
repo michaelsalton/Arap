@@ -26,3 +26,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     igl::glfw
     igl::imgui
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    DATA_DIR="${CMAKE_SOURCE_DIR}/data"
+)

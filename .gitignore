@@ -1,28 +1,19 @@
-# Build directories
 build/
 cmake-build-*/
-
-# IDE
 .idea/
 .vscode/
+_specs/
 *.swp
 *.swo
 *~
 .claude/
-
-# Compiled objects
 *.o
 *.obj
 *.a
 *.so
 *.dylib
-
-# Executables
 *.out
 *.exe
-
-# OS
 .DS_Store
 Thumbs.db
-
 *.pdf
