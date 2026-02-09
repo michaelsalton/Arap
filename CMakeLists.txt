@@ -18,7 +18,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(libigl)
 
 # Main executable
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/viewer_app.cpp
+    src/arap_deformer.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     igl::core
