@@ -1,7 +1,10 @@
 #pragma once
 
 #include "arap_deformer.h"
+#include "control_panel.h"
 #include <igl/opengl/glfw/Viewer.h>
+#include <igl/opengl/glfw/imgui/ImGuiPlugin.h>
+#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 #include <Eigen/Core>
 #include <set>
 #include <string>
@@ -23,8 +26,11 @@ private:
     Eigen::MatrixXd V_current_;   // current (deformed) vertex positions
     Eigen::MatrixXi F_;           // face indices
 
-    // Viewer
+    // Viewer + ImGui
     igl::opengl::glfw::Viewer viewer_;
+    igl::opengl::glfw::imgui::ImGuiPlugin imgui_plugin_;
+    igl::opengl::glfw::imgui::ImGuiMenu imgui_menu_;
+    ControlPanel panel_;
 
     // Deformer back-end
     ArapDeformer deformer_;
@@ -48,4 +54,6 @@ private:
     void update_overlay();
     void sync_constraints();
     void solve_and_update();
+    void reset_mesh();
+    void clear_selection();
 };

@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/viewer_app.cpp
     src/arap_deformer.cpp
+    src/control_panel.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC

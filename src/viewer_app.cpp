@@ -34,6 +34,47 @@ void ViewerApp::launch() {
     viewer_.data().compute_normals();
     viewer_.data().point_size = 10.0f;
 
+    // --- ImGui setup ---
+    viewer_.plugins.push_back(&imgui_plugin_);
+    imgui_plugin_.widgets.push_back(&imgui_menu_);
+
+    imgui_menu_.callback_draw_viewer_menu = []() {};  // hide default menu
+
+    panel_.interaction_mode = &interaction_mode_;
+    panel_.solver_mode = &solver_mode_;
+    panel_.arap_iterations = &arap_iterations_;
+    panel_.on_reset_mesh = [this]() { reset_mesh(); };
+    panel_.on_clear_selection = [this]() { clear_selection(); };
+
+    imgui_menu_.callback_draw_custom_window = [this]() {
+        panel_.num_vertices = V_.rows();
+        panel_.num_faces = F_.rows();
+        panel_.num_constraints = selected_vertices_.size();
+        panel_.last_solve_time_ms = last_solve_time_ms_;
+        panel_.draw();
+    };
+
+    // --- Keyboard shortcuts ---
+    viewer_.callback_key_pressed =
+        [this](igl::opengl::glfw::Viewer&, unsigned int key, int) -> bool {
+        switch (key) {
+            case ' ':
+                interaction_mode_ = 1 - interaction_mode_;
+                return true;
+            case 'r': case 'R':
+                reset_mesh();
+                return true;
+            case '1':
+                solver_mode_ = 0;
+                return true;
+            case '2':
+                solver_mode_ = 1;
+                return true;
+            default:
+                return false;
+        }
+    };
+
     // --- Mouse Down: select mode or drag start ---
     viewer_.callback_mouse_down =
         [this](igl::opengl::glfw::Viewer& viewer, int button, int modifier) -> bool {
@@ -149,6 +190,27 @@ void ViewerApp::sync_constraints() {
     }
 
     deformer_.set_constraints(indices);
+}
+
+void ViewerApp::reset_mesh() {
+    is_dragging_ = false;
+    dragged_vertex_ = -1;
+    V_current_ = V_;
+    viewer_.data().set_vertices(V_current_);
+    viewer_.data().compute_normals();
+    int k = 0;
+    for (int vid : selected_vertices_)
+        constraint_positions_.row(k++) = V_.row(vid);
+    update_overlay();
+}
+
+void ViewerApp::clear_selection() {
+    is_dragging_ = false;
+    dragged_vertex_ = -1;
+    selected_vertices_.clear();
+    constraint_positions_.resize(0, 3);
+    sync_constraints();
+    update_overlay();
 }
 
 void ViewerApp::solve_and_update() {
