@@ -38,7 +38,14 @@ private:
     int arap_iterations_ = 5;
     double last_solve_time_ms_ = 0.0;
 
+    // Drag state
+    float drag_depth_ = 0.0f;  // screen-space depth at drag start
+
+    // Constraint positions (indexed same order as selected_vertices_)
+    Eigen::MatrixXd constraint_positions_;
+
     // Helpers
     void update_overlay();
     void sync_constraints();
+    void solve_and_update();
 };
