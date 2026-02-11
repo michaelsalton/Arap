@@ -37,4 +37,8 @@ private:
     int solver_mode_ = 0;        // 0 = Laplacian, 1 = ARAP
     int arap_iterations_ = 5;
     double last_solve_time_ms_ = 0.0;
+
+    // Helpers
+    void update_overlay();
+    void sync_constraints();
 };
