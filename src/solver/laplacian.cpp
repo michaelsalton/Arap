@@ -1,4 +1,4 @@
-#include "laplacian.h"
+#include "solver/laplacian.h"
 #include <igl/cotmatrix.h>
 
 void LaplacianSolver::precompute(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F) {

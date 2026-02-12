@@ -1,4 +1,4 @@
-#include "control_panel.h"
+#include "ui/control_panel.h"
 
 void ControlPanel::draw() {
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);

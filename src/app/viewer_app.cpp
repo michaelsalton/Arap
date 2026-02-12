@@ -1,4 +1,4 @@
-#include "viewer_app.h"
+#include "app/viewer_app.h"
 #include "types/modes.h"
 #include <igl/read_triangle_mesh.h>
 #include <igl/edges.h>

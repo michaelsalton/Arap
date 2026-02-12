@@ -1,4 +1,4 @@
-#include "overlay_renderer.h"
+#include "app/overlay_renderer.h"
 #include "types/modes.h"
 #include "types/colors.h"
 #include <igl/per_vertex_normals.h>

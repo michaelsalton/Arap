@@ -1,4 +1,4 @@
-#include "arap.h"
+#include "solver/arap.h"
 #include <igl/adjacency_list.h>
 #include <Eigen/SVD>
 #include <cmath>

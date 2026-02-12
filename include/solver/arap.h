@@ -1,6 +1,6 @@
 #pragma once
 
-#include "laplacian.h"
+#include "solver/laplacian.h"
 #include <vector>
 
 class ArapSolver : public LaplacianSolver {
