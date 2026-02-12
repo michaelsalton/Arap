@@ -11,7 +11,7 @@
 
 namespace {
     constexpr double kSelectionRadius = 20.0;   // pixels
-    constexpr double kOcclusionEpsilon = 0.05;   // depth tolerance
+    constexpr double kOcclusionFraction = 0.3;  // fraction of mesh depth range
 }
 
 bool ViewerApp::load_mesh(const std::string& path) {
@@ -114,6 +114,10 @@ void ViewerApp::launch() {
         igl::project(V_current_, viewer.core().view, viewer.core().proj,
                      viewer.core().viewport, screen_verts);
 
+        // Dynamic occlusion threshold based on mesh depth range
+        double depth_range = screen_verts.col(2).maxCoeff() - screen_verts.col(2).minCoeff();
+        double occlusion_eps = depth_range * kOcclusionFraction;
+
         // Viewport bounds for culling
         double vp_w = viewer.core().viewport(2);
         double vp_h = viewer.core().viewport(3);
@@ -160,7 +164,7 @@ void ViewerApp::launch() {
             if (selection_element_mode_ == 0) {
                 // Vertex mode: find closest vertex
                 if (vid < 0 || std::sqrt(min_dist) > kSelectionRadius) return false;
-                if (screen_verts(vid, 2) > front_depth + kOcclusionEpsilon) return false;
+                if (screen_verts(vid, 2) > front_depth + occlusion_eps) return false;
 
                 if (selected_vertices_.count(vid))
                     selected_vertices_.erase(vid);
@@ -193,7 +197,7 @@ void ViewerApp::launch() {
 
                 int v0 = E_(best_edge, 0), v1 = E_(best_edge, 1);
                 double edge_depth = std::min(screen_verts(v0, 2), screen_verts(v1, 2));
-                if (edge_depth > front_depth + kOcclusionEpsilon) return false;
+                if (edge_depth > front_depth + occlusion_eps) return false;
                 bool all_selected = selected_vertices_.count(v0) && selected_vertices_.count(v1);
                 if (all_selected) {
                     selected_vertices_.erase(v0);
@@ -222,7 +226,7 @@ void ViewerApp::launch() {
 
                 int v0 = F_(best_face, 0), v1 = F_(best_face, 1), v2 = F_(best_face, 2);
                 double face_depth = std::min({screen_verts(v0, 2), screen_verts(v1, 2), screen_verts(v2, 2)});
-                if (face_depth > front_depth + kOcclusionEpsilon) return false;
+                if (face_depth > front_depth + occlusion_eps) return false;
                 bool all_selected = selected_vertices_.count(v0)
                                  && selected_vertices_.count(v1)
                                  && selected_vertices_.count(v2);
@@ -243,7 +247,7 @@ void ViewerApp::launch() {
         } else {
             // Drag mode: start drag if nearest vertex is selected
             if (vid < 0 || std::sqrt(min_dist) > kSelectionRadius) return false;
-            if (screen_verts(vid, 2) > front_depth + kOcclusionEpsilon) return false;
+            if (screen_verts(vid, 2) > front_depth + occlusion_eps) return false;
             if (!selected_vertices_.count(vid)) return false;
 
             is_dragging_ = true;
@@ -323,11 +327,14 @@ void ViewerApp::update_overlay() {
     }
 
     if (selection_element_mode_ == 0) {
-        // Vertex mode: show all vertices as orange, selected as red
-        viewer_.data().add_points(V_overlay, orange);
-        for (int vid : selected_vertices_) {
-            Eigen::RowVector3d color = (vid == dragged_vertex_) ? green : red;
-            viewer_.data().add_points(V_overlay.row(vid), color);
+        // Vertex mode: unselected as orange, selected as red
+        for (int i = 0; i < V_overlay.rows(); ++i) {
+            if (selected_vertices_.count(i)) {
+                Eigen::RowVector3d color = (i == dragged_vertex_) ? green : red;
+                viewer_.data().add_points(V_overlay.row(i), color);
+            } else {
+                viewer_.data().add_points(V_overlay.row(i), orange);
+            }
         }
 
     } else if (selection_element_mode_ == 1) {
