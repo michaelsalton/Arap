@@ -1,4 +1,5 @@
 #include "overlay_renderer.h"
+#include "types/modes.h"
 #include <igl/per_vertex_normals.h>
 
 namespace {
@@ -21,16 +22,16 @@ void OverlayRenderer::update(igl::opengl::ViewerData& data,
     Eigen::MatrixXd V_overlay = compute_overlay_positions(V_current, F);
 
     // Reset per-face colors when not in face mode
-    if (selection_mode != 2) {
+    if (selection_mode != FACE) {
         Eigen::MatrixXd C(1, 3);
         C.row(0) = kDefaultFace;
         data.set_colors(C);
     }
 
     switch (selection_mode) {
-        case 0: highlight_vertices(data, V_overlay, selected, dragged_vertex); break;
-        case 1: highlight_edges(data, V_overlay, E, selected, dragged_vertex); break;
-        case 2: highlight_faces(data, V_overlay, F, selected, dragged_vertex); break;
+        case VERTEX: highlight_vertices(data, V_overlay, selected, dragged_vertex); break;
+        case EDGE:   highlight_edges(data, V_overlay, E, selected, dragged_vertex); break;
+        case FACE:   highlight_faces(data, V_overlay, F, selected, dragged_vertex); break;
     }
 }
 

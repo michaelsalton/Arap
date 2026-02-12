@@ -1,4 +1,5 @@
 #include "viewer_app.h"
+#include "types/modes.h"
 #include <igl/read_triangle_mesh.h>
 #include <igl/edges.h>
 #include <iostream>
@@ -144,10 +145,10 @@ void ViewerApp::solve_and_update() {
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
-    if (solver_mode_ == 1)
-        V_current_ = deformer_.solve_arap(constraint_positions_, arap_iterations_);
+    if (solver_mode_ == ARAP)
+        V_current_ = deformer_.solve(constraint_positions_, arap_iterations_);
     else
-        V_current_ = deformer_.solve_laplacian(constraint_positions_);
+        V_current_ = deformer_.solve(constraint_positions_);
 
     auto t1 = std::chrono::high_resolution_clock::now();
     last_solve_time_ms_ = std::chrono::duration<double, std::milli>(t1 - t0).count();

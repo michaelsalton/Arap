@@ -1,6 +1,6 @@
 #pragma once
 
-#include "solver/arap_deformer.h"
+#include "solver/arap.h"
 #include "ui/control_panel.h"
 #include "app/input_handler.h"
 #include "app/overlay_renderer.h"
@@ -33,7 +33,7 @@ private:
     ControlPanel panel_;
 
     // Subsystems
-    ArapDeformer deformer_;
+    ArapSolver deformer_;
     InputHandler input_;
     OverlayRenderer overlay_;
 

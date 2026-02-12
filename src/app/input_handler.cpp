@@ -1,4 +1,5 @@
 #include "input_handler.h"
+#include "types/modes.h"
 #include <igl/project.h>
 #include <igl/unproject.h>
 #include <igl/unproject_onto_mesh.h>
@@ -32,27 +33,26 @@ void InputHandler::bind(igl::opengl::glfw::Viewer& viewer) {
 bool InputHandler::on_key_pressed(igl::opengl::glfw::Viewer&, unsigned int key, int) {
     switch (key) {
         case ' ':
-            *interaction_mode = 1 - *interaction_mode;
+            *interaction_mode = (*interaction_mode == SELECT) ? DRAG : SELECT;
             return true;
         case 'r': case 'R':
-            // Reset is handled by ViewerApp via on_selection_changed after clear
             return false;
         case '1':
-            *solver_mode = 0;
+            *solver_mode = LAPLACIAN;
             return true;
         case '2':
-            *solver_mode = 1;
+            *solver_mode = ARAP;
             return true;
         case 'v': case 'V':
-            *selection_element_mode = 0;
+            *selection_element_mode = VERTEX;
             if (on_overlay_needs_update) on_overlay_needs_update();
             return true;
         case 'e': case 'E':
-            *selection_element_mode = 1;
+            *selection_element_mode = EDGE;
             if (on_overlay_needs_update) on_overlay_needs_update();
             return true;
         case 'f': case 'F':
-            *selection_element_mode = 2;
+            *selection_element_mode = FACE;
             if (on_overlay_needs_update) on_overlay_needs_update();
             return true;
         default:
@@ -183,13 +183,13 @@ bool InputHandler::on_mouse_down(igl::opengl::glfw::Viewer& viewer, int button, 
 
     PickContext ctx = build_pick_context(viewer);
 
-    if (*interaction_mode == 0) {
+    if (*interaction_mode == SELECT) {
         // Select mode
-        if (*selection_element_mode == 0) {
+        if (*selection_element_mode == VERTEX) {
             int vid = pick_nearest_vertex(ctx);
             if (vid < 0) return false;
             toggle_vertices({vid});
-        } else if (*selection_element_mode == 1) {
+        } else if (*selection_element_mode == EDGE) {
             int eid = pick_edge(ctx);
             if (eid < 0) return false;
             toggle_vertices({(*E)(eid, 0), (*E)(eid, 1)});
