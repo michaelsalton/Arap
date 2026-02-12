@@ -4,6 +4,7 @@
 #include <igl/unproject.h>
 #include <igl/unproject_onto_mesh.h>
 #include <igl/edges.h>
+#include <igl/per_vertex_normals.h>
 #include <iostream>
 #include <chrono>
 #include <algorithm>
@@ -44,7 +45,7 @@ void ViewerApp::launch() {
     viewer_.data().compute_normals();
     viewer_.data().point_size = 10.0f;
     viewer_.data().line_width = 3.0f;
-    viewer_.data().show_overlay_depth = false;
+    viewer_.data().show_overlay_depth = true;
 
     // --- ImGui setup ---
     viewer_.plugins.push_back(&imgui_plugin_);
@@ -308,6 +309,12 @@ void ViewerApp::update_overlay() {
     const Eigen::RowVector3d green(0.0, 1.0, 0.0);
     const Eigen::RowVector3d orange(1.0, 0.6, 0.0);
 
+    // Offset overlay positions slightly along vertex normals to avoid z-fighting
+    Eigen::MatrixXd N;
+    igl::per_vertex_normals(V_current_, F_, N);
+    double diag = (V_current_.colwise().maxCoeff() - V_current_.colwise().minCoeff()).norm();
+    Eigen::MatrixXd V_overlay = V_current_ + N * (diag * 0.002);
+
     // Reset per-face colors when not in face mode
     if (selection_element_mode_ != 2) {
         Eigen::MatrixXd C(1, 3);
@@ -317,10 +324,10 @@ void ViewerApp::update_overlay() {
 
     if (selection_element_mode_ == 0) {
         // Vertex mode: show all vertices as orange, selected as red
-        viewer_.data().add_points(V_current_, orange);
+        viewer_.data().add_points(V_overlay, orange);
         for (int vid : selected_vertices_) {
             Eigen::RowVector3d color = (vid == dragged_vertex_) ? green : red;
-            viewer_.data().add_points(V_current_.row(vid), color);
+            viewer_.data().add_points(V_overlay.row(vid), color);
         }
 
     } else if (selection_element_mode_ == 1) {
@@ -329,8 +336,8 @@ void ViewerApp::update_overlay() {
         Eigen::MatrixXd P1(ne, 3), P2(ne, 3), C(ne, 3);
         for (int e = 0; e < ne; ++e) {
             int i = E_(e, 0), j = E_(e, 1);
-            P1.row(e) = V_current_.row(i);
-            P2.row(e) = V_current_.row(j);
+            P1.row(e) = V_overlay.row(i);
+            P2.row(e) = V_overlay.row(j);
             bool selected = selected_vertices_.count(i) && selected_vertices_.count(j);
             C.row(e) = selected ? red : orange;
         }
@@ -339,7 +346,7 @@ void ViewerApp::update_overlay() {
         // Draw selected vertices as points
         for (int vid : selected_vertices_) {
             Eigen::RowVector3d color = (vid == dragged_vertex_) ? green : red;
-            viewer_.data().add_points(V_current_.row(vid), color);
+            viewer_.data().add_points(V_overlay.row(vid), color);
         }
 
     } else {
@@ -356,7 +363,7 @@ void ViewerApp::update_overlay() {
         // Draw selected vertices as points
         for (int vid : selected_vertices_) {
             Eigen::RowVector3d color = (vid == dragged_vertex_) ? green : red;
-            viewer_.data().add_points(V_current_.row(vid), color);
+            viewer_.data().add_points(V_overlay.row(vid), color);
         }
     }
 }
