@@ -21,6 +21,8 @@ FetchContent_MakeAvailable(libigl)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/app/viewer_app.cpp
+    src/app/input_handler.cpp
+    src/app/overlay_renderer.cpp
     src/solver/arap_deformer.cpp
     src/ui/control_panel.cpp
 )
