@@ -2,7 +2,7 @@ build/
 cmake-build-*/
 .idea/
 .vscode/
-_specs/
+docs/
 *.swp
 *.swo
 *~

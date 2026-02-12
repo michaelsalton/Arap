@@ -1,7 +1,7 @@
 #pragma once
 
-#include "arap_deformer.h"
-#include "control_panel.h"
+#include "solver/arap_deformer.h"
+#include "ui/control_panel.h"
 #include <igl/opengl/glfw/Viewer.h>
 #include <igl/opengl/glfw/imgui/ImGuiPlugin.h>
 #include <igl/opengl/glfw/imgui/ImGuiMenu.h>

@@ -20,10 +20,12 @@ FetchContent_MakeAvailable(libigl)
 # Main executable
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/viewer_app.cpp
-    src/arap_deformer.cpp
-    src/control_panel.cpp
+    src/app/viewer_app.cpp
+    src/solver/arap_deformer.cpp
+    src/ui/control_panel.cpp
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     igl::core
