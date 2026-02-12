@@ -38,7 +38,7 @@ void ViewerApp::launch() {
     viewer_.plugins.push_back(&imgui_plugin_);
     imgui_plugin_.widgets.push_back(&imgui_menu_);
 
-    imgui_menu_.callback_draw_viewer_menu = []() {};  // hide default menu
+    imgui_menu_.callback_draw_viewer_window = []() {};  // hide default viewer window
 
     panel_.interaction_mode = &interaction_mode_;
     panel_.solver_mode = &solver_mode_;
