@@ -25,6 +25,7 @@ private:
     Eigen::MatrixXd V_;           // original vertex positions
     Eigen::MatrixXd V_current_;   // current (deformed) vertex positions
     Eigen::MatrixXi F_;           // face indices
+    Eigen::MatrixXi E_;           // #E x 2 unique edges (precomputed)
 
     // Viewer + ImGui
     igl::opengl::glfw::Viewer viewer_;
@@ -39,8 +40,9 @@ private:
     std::set<int> selected_vertices_;
     int dragged_vertex_ = -1;
     bool is_dragging_ = false;
-    int interaction_mode_ = 0;   // 0 = Select, 1 = Drag
-    int solver_mode_ = 0;        // 0 = Laplacian, 1 = ARAP
+    int interaction_mode_ = 0;       // 0 = Select, 1 = Drag
+    int solver_mode_ = 0;            // 0 = Laplacian, 1 = ARAP
+    int selection_element_mode_ = 0; // 0 = Vertex, 1 = Edge, 2 = Face
     int arap_iterations_ = 5;
     double last_solve_time_ms_ = 0.0;
 

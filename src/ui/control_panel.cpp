@@ -11,6 +11,14 @@ void ControlPanel::draw() {
     ImGui::RadioButton("Drag", interaction_mode, 1);
 
     ImGui::Spacing();
+    ImGui::Text("Selection");
+    ImGui::RadioButton("Vertex", selection_element_mode, 0);
+    ImGui::SameLine();
+    ImGui::RadioButton("Edge", selection_element_mode, 1);
+    ImGui::SameLine();
+    ImGui::RadioButton("Face", selection_element_mode, 2);
+
+    ImGui::Spacing();
     ImGui::Text("Solver");
     ImGui::RadioButton("Laplacian", solver_mode, 0);
     ImGui::SameLine();

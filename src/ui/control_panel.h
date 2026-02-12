@@ -7,6 +7,7 @@ struct ControlPanel {
     // State (owned by ViewerApp, bound via pointers)
     int* interaction_mode = nullptr;
     int* solver_mode = nullptr;
+    int* selection_element_mode = nullptr;
     int* arap_iterations = nullptr;
     int num_vertices = 0;
     int num_faces = 0;
