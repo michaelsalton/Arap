@@ -45,10 +45,10 @@ void OverlayRenderer::highlight_vertices(igl::opengl::ViewerData& data,
                                          int dragged_vertex) {
     for (int i = 0; i < V_overlay.rows(); ++i) {
         if (selected.count(i)) {
-            Eigen::RowVector3d color = (i == dragged_vertex) ? kGreen : kRed;
+            Eigen::RowVector3d color = (i == dragged_vertex) ? kGreen : kOrange;
             data.add_points(V_overlay.row(i), color);
         } else {
-            data.add_points(V_overlay.row(i), kOrange);
+            data.add_points(V_overlay.row(i), kBlack);
         }
     }
 }
@@ -65,12 +65,12 @@ void OverlayRenderer::highlight_edges(igl::opengl::ViewerData& data,
         P1.row(e) = V_overlay.row(i);
         P2.row(e) = V_overlay.row(j);
         bool edge_selected = selected.count(i) && selected.count(j);
-        C.row(e) = edge_selected ? kRed : kOrange;
+        C.row(e) = edge_selected ? kOrange : kBlack;
     }
     data.add_edges(P1, P2, C);
 
     for (int vid : selected) {
-        Eigen::RowVector3d color = (vid == dragged_vertex) ? kGreen : kRed;
+        Eigen::RowVector3d color = (vid == dragged_vertex) ? kGreen : kOrange;
         data.add_points(V_overlay.row(vid), color);
     }
 }
@@ -85,12 +85,12 @@ void OverlayRenderer::highlight_faces(igl::opengl::ViewerData& data,
         bool all_selected = selected.count(F(f, 0))
                          && selected.count(F(f, 1))
                          && selected.count(F(f, 2));
-        C.row(f) = all_selected ? kRed : kOrange;
+        C.row(f) = all_selected ? kOrange : kDefaultFace;
     }
     data.set_colors(C);
 
     for (int vid : selected) {
-        Eigen::RowVector3d color = (vid == dragged_vertex) ? kGreen : kRed;
+        Eigen::RowVector3d color = (vid == dragged_vertex) ? kGreen : kOrange;
         data.add_points(V_overlay.row(vid), color);
     }
 }

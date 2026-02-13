@@ -29,6 +29,7 @@ bool ViewerApp::load_mesh(const std::string& path) {
 }
 
 void ViewerApp::launch() {
+    viewer_.core().background_color = Eigen::Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
     viewer_.data().set_mesh(V_current_, F_);
     viewer_.data().compute_normals();
     viewer_.data().point_size = 10.0f;
